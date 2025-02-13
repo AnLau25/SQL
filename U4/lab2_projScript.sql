@@ -1,0 +1,26 @@
+USE MISCOMPANY;
+
+
+
+CREATE TABLE Project_T
+(
+   Proj_ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   Proj_name VARCHAR(21) NOT NULL,
+   Loc_name VARCHAR (21) NOT NULL,
+   Dep_ID INT NOT NULL,
+   FOREIGN KEY (Dep_ID, Loc_name) REFERENCES Location_T(Dep_ID, Loc_name) ON UPDATE CASCADE
+);
+
+/*
+
+CREATE TABLE Project_T
+(
+   Proj_ID SERIAL PRIMARY KEY,
+   Proj_name VARCHAR(21) NOT NULL,
+   Loc_name VARCHAR (21) NOT NULL,
+   FOREIGN KEY (Loc_name) REFERENCES Location_T(Loc_name) ON UPDATE CASCADE
+   Dep_ID INT NOT NULL,
+   FOREIGN KEY (Dep_ID) REFERENCES Department_T(Dep_ID) ON UPDATE CASCADE
+);
+
+*/

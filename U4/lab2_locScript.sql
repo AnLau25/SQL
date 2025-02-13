@@ -1,0 +1,11 @@
+USE MISCOMPANY;
+
+
+
+CREATE TABLE Location_T
+(
+   Dep_ID INT NOT NULL,
+   FOREIGN KEY (Dep_ID) REFERENCES Department_T(Dep_ID) ON UPDATE CASCADE,
+   Loc_name VARCHAR (21) NOT NULL,   
+   PRIMARY KEY (Dep_ID, Loc_name)
+);
