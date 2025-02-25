@@ -74,3 +74,16 @@ WHERE CUSTOMER.destination = 'Ottawa'
 GROUP BY TRAVEL_AGENT.TA_no, TRAVEL_AGENT.name
 HAVING COUNT(TRANSACTION.number) >= 10;
 
+
+RealtorAgent (realtor_no, name, age, address, commission_percentage)
+Customer (C_ID, name, property_id, property_address, description, property_tax, property_value)
+Transaction (realtor_no, C_ID, property_id, price_sold, date_sold)
+
+/*Consider the following Realtor database with three relations. Write SQL statements for creating a view called AgentsOfTheYear that will display the name and address of realtors who have sold a total amount of 5 million dollars’ worth of properties in 2021.*/
+CREATE VIEW AgentsOfTheYear AS
+SELECT RealtorAgent.name, RealtorAgent.address FROM RealtorAgent
+INNER JOIN Transaction ON Transaction.realtor_no = RealtorAgent.realtor_no
+WHERE YEAR(Transaction.date_sold) = 2021
+GROUP BY RealtorAgent.name, RealtorAgent.address
+HAVING SUM(Transaction.price_sold) = 5000000;
+
