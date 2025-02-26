@@ -87,3 +87,17 @@ WHERE YEAR(Transaction.date_sold) = 2021
 GROUP BY RealtorAgent.name, RealtorAgent.address
 HAVING SUM(Transaction.price_sold) = 5000000;
 
+/*Write SQL query to list the names of instructors who have taught COMP 378 but not COMP 418 during the following sessions: Winter 2020 and Winter 2021.*/
+SELECT DISTINCT name FROM Instructor
+WHERE instructor_no IN (
+    SELECT instructor_no 
+    FROM Registration 
+    WHERE (session LIKE 'Winter 2020%' OR session LIKE 'Winter 2021%') 
+    AND course_no = 'COMP378' 
+)
+AND instructor_no NOT IN (
+    SELECT instructor_no 
+    FROM Registration 
+    WHERE (session LIKE 'Winter 2020%' OR session LIKE 'Winter 2021%') 
+    AND course_no = 'COMP418'
+);/*Might have been qualified before and not anymore*/
