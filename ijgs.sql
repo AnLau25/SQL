@@ -7,3 +7,7 @@ CREATE TABLE links(
    CONSTRAINT fk_user FOREIGN KEY (user_name) REFERENCES users(user_name) ON UPDATE CASCADE
 );
 --A chinga, mi plan funcionó (- 3 -)
+
+INSERT INTO users (user_name, user_pswrd) VALUES 
+    ('Messi', '10WhatIsPassword'), 
+    ('Carlos', '55NotaSafePassowrd'); --populating, populating
