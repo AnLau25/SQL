@@ -139,3 +139,40 @@ VALUES
     (3, 'Computational Biology', 'Athabasca', 11),
     (4, 'Data Analytics', 'Edmonton', 10),
     (5, 'Educational Games', 'Athabasca', 11);
+
+
+--MySQL lingo
+INSERT INTO users (username, password) VALUES
+    ('Messi', '10WhatIsPassword'),
+    ('Carlos', '145507NotaSafePassowrd');
+
+INSERT INTO users (link_adr, link_name, link_click, user_name) VALUES
+    ('https://www.marca.com/radio.html#', 'Marca', 10, 'Carlos');
+
+INSERT INTO links (link_adr, link_name, link_click, user_name) VALUES
+    ('https://www.marca.com/radio.html#', 'Marca', 10, 'Carlos'),
+    ('https://www.marca.com/radio.html#', 'Radio Marca', 2, 'Messi'),
+    ('https://www.marca.com/radio.html#', 'Marca Radio', 17, 'Rafinha'),
+    ('https://www.astonmartinf1.com/en-GB/', 'AstonF1', 33, 'Fernando'),
+    ('https://www.williamsf1.com/', 'Williams', 55, 'Carlos'),
+    ('https://www.ferrari.com/en-EN/formula1', 'Ferrari', 21, 'Carlos'),
+    ('https://www.ferrari.com/en-EN/formula1', 'LaFerrari', 14, 'Fernando'),
+    ('https://www.fcbarcelona.com/en/', 'Barca', 25, 'Rafinha'),
+    ('https://www.fcbarcelona.com/en/', 'ElBarcelona', 10, 'Messi'),
+    ('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/', 'FluffyPancake', 7, 'Carlos'),
+    ('https://www.bhg.com/decorating/home-accessories/flower-arranging/how-to-make-a-flower-arrangement/', 'ForSebastian', 5, 'Fernando'),
+    ('https://www.realtor.com/realestateandhomes-search/South-Miami_FL/type-condo,townhome?cid=sem_149490225_674908965_1236951567465339_77309602935049:G:s&s_kwcid=AL!15120!3!!b!!o!!ClusterA-Tier1%20city%20type-condo,townhome&gclid=15ff80fd72a6100e8723e73ee6270f9d&gclsrc=3p.ds&msclkid=15ff80fd72a6100e8723e73ee6270f9d', 'CasitadelInter', 3,'Messi'),
+    ('https://www.mclaren.com/racing/', 'ItsNearAFish', 16, 'Carlos'),
+    ('https://www.mclaren.com/racing/', 'Andrea', 2, 'Fernando'),
+    ('https://en.wikipedia.org/wiki/Hansi_Flick', 'Bossssss', 11, 'Rafinha'),
+    ('https://www.intermiamicf.com/', 'Team', 10, 'Messi'),
+    ('https://www.intermiamicf.com/', 'HellComeBack', 3, 'Messi'),
+    ('https://pantene.ca/en-ca', 'Sponsor', 15, 'Carlos'),
+    ('https://www.realmadrid.com/en-US', 'Pronto', 25, 'Rafinha'),
+    ('https://www.realmadrid.com/en-US', 'NextGame', 2, 'Fernando'),
+    ('https://www.realmadrid.com/en-US', 'Chill?', 5, 'Carlos');
+
+SELECT link_adr FROM links
+GROUP BY link_adr
+ORDER BY SUM(link_click) DESC
+LIMIT 10;
