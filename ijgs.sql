@@ -11,3 +11,10 @@ CREATE TABLE links(
 INSERT INTO users (user_name, user_pswrd) VALUES 
     ('Messi', '10WhatIsPassword'), 
     ('Carlos', '55NotaSafePassowrd'); --populating, populating
+
+--For XML
+CREATE TABLE xml_storage (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255),
+    xml_content LONGTEXT -- Use LONGTEXT if the XML is large
+);
