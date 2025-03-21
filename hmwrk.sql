@@ -101,3 +101,14 @@ AND instructor_no NOT IN (
     WHERE (session LIKE 'Winter 2020%' OR session LIKE 'Winter 2021%') 
     AND course_no = 'COMP418'
 );/*Might have been qualified before and not anymore*/
+
+/*
+a.	Write a SELECT SQL query to list the numbers and names of all employees with a salary greater than 66000 who are assigned to projects, 
+    and list the project name and location they are assigned to as well as the corresponding hours worked for each project. 
+    Your list should be sorted by employee name.
+*/
+SELECT Employee.emp-no, Employee.name, Project.name, Project.location, ProjAssigned.worked-hours FROM Employee
+INNER JOIN ProjAssigned ON Employee.emp-no = ProjAssigned.emp-no
+JOIN Project ON ProjAssigned.proj-no = Project.proj_no
+WHERE Employee.salary > 66000
+ORDER BY Employee.name ASC;
