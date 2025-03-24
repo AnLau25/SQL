@@ -112,3 +112,10 @@ INNER JOIN ProjAssigned ON Employee.emp-no = ProjAssigned.emp-no
 JOIN Project ON ProjAssigned.proj-no = Project.proj_no
 WHERE Employee.salary > 66000
 ORDER BY Employee.name ASC;
+
+CREATE UNIQUE INDEX EmpNo_PK ON Employee(emp-no);
+CREATE UNIQUE INDEX ProjNo_PK ON Project(proj_no);
+CREATE UNIQUE INDEX Assignements_PK ProjAssigned(emp-no, proj-no); 
+CREATE INDEX Names_FK ON Employee(name);
+CREATE INDEX Salary_FK ON Employee(salary);
+
