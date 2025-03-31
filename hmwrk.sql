@@ -119,3 +119,149 @@ CREATE UNIQUE INDEX Assignements_PK ProjAssigned(emp-no, proj-no);
 CREATE INDEX Names_FK ON Employee(name);
 CREATE INDEX Salary_FK ON Employee(salary);
 
+/*
+For each treatment performed in the past two weeks, list the physicians performing the 
+treatment (grouped by treatment) and the number of times each physician performed that 
+particular treatment on that particular day. 
+Order the list by treatment ID and by reverse chronological order for each treatment ID.
+*/
+Treatement{Treatement_ID(Treatment_Number, Treatment_Name)}
+Physician{Physician_ID, Pager_Number, Specialty, Care_Center_Name}
+Treatement_Record{Treatement_ID, Physician_ID, Patient_ID, Treatment_Date, Treatement_Time, Results}
+
+SELECT 
+    Treatement_Record.Treatement_ID,
+    Treatementt.Treatment_Name,
+    Treatement_Record.Treatment_Date,
+    Treatement_Record.Physician_ID,
+    COUNT(*) AS Treatment_Count
+FROM Treatement_Record
+JOIN Treatement ON Treatement_Record.Treatement_ID = Treatement.Treatement_ID
+WHERE Treatement_Record.Treatment_Date >= CURRENT_DATE - INTERVAL '14 DAY'
+GROUP BY Treatement_Record.Treatement_ID, Treatement.Treatment_Name, Treatement_Record.Treatment_Date, Treatement_Record.Physician_ID
+ORDER BY Treatement_Record.Treatement_ID ASC, Treatement_Record.Treatment_Date DESC;
+
+CREATE INDEX TDate_FK ON Treatment_Reccord(Treatment_Date);
+CREATE INDEX TID_FK ON Treatement_Record(Treatement_ID);
+CREATE INDEX PID_FK ON Treatment_Reccord(Physician_ID);
+CREATE INDEX Treatement_Group ON Treatement_Record(Treatement_ID, Treatment_Date, Physician_ID);
+
+/*Module 3*/
+CREATE DATABASE RVH;
+
+CREATE TABLE Patients(
+   pid SERIAL PRIMARY KEY,
+   name VARCHAR NOT NULL,
+   address VARCHAR NOT NULL,
+   telephone VARCHAR(10) NOT NULL,
+   care_centre_id INT NOT NULL,
+   CONSTRAINT fkp_care_center FOREIGN KEY (care_centre_id) REFERENCES Care_centres(cid) ON UPDATE CASCADE
+);
+
+CREATE TABLE Care_centres(
+   cid SERIAL PRIMARY KEY,
+   name VARCHAR NOT NULL,
+   location VARCHAR NOT NULL,
+   nurse_charge_id INT NOT NULL,
+   CONSTRAINT fk_nurse_charge FOREIGN KEY (nurse_charge_id) REFERENCES Nurses(nid) ON UPDATE CASCADE
+);
+
+CREATE TABLE Treatments(
+   tid SERIAL PRIMARY KEY,
+   treatment_name VARCHAR(255) NOT NULL,
+   date_aplied DATE NOT NULL,
+   patient_id INT NOT NULL,
+   physician_id INT NOT NULL,
+   CONSTRAINT fk_patient FOREIGN KEY (patient_id) REFERENCES Patients(pid) ON UPDATE CASCADE,
+   CONSTRAINT fk_physician FOREIGN KEY (physician_id) REFERENCES Physicians(phid) ON UPDATE CASCADE
+);
+
+CREATE TABLE Nurses(
+   nid SERIAL PRIMARY KEY,
+   name VARCHAR NOT NULL,
+   certificate_type VARCHAR NOT NULL,
+   telephone VARCHAR(10) NOT NULL,
+   salary INT NOT NULL,
+   care_centre_id INT NOT NULL
+);
+
+ALTER TABLE Nurses
+ADD CONSTRAINT fkn_care_center 
+FOREIGN KEY (care_centre_id) 
+REFERENCES Care_centres(cid) ON UPDATE CASCADE;
+
+CREATE TABLE Physicians(
+   phid SERIAL PRIMARY KEY,
+   pager_number SERIAL NOT NULL UNIQUE,
+   name VARCHAR NOT NULL,
+   specialization VARCHAR NOT NULL,
+   salary INT NOT NULL
+);
+
+/*----------------------------------------------*/
+
+CREATE UNIQUE INDEX tid ON Treatments (tid);
+
+CREATE UNIQUE INDEX pid ON Patients (pid);
+CREATE INDEX patient_id ON Treatments (patient_id);
+
+CREATE UNIQUE INDEX nid ON Nurses (nid);
+CREATE INDEX nurse_charge_id ON Care_centres (nurse_charge_id);
+
+CREATE UNIQUE INDEX phid ON Physicians (phid);
+CREATE INDEX physician_id ON Treatments (physician_id);
+
+CREATE UNIQUE INDEX cid ON Care_centres (cid);
+CREATE INDEX nurse_care_centre ON Nurses (care_centre_id);
+CREATE INDEX patient_centre_id ON Patients (care_centre_id);
+
+/*----------------------------------------------*/
+
+INSERT INTO Nurses (name, certificate_type, telephone, salary, care_centre_id) VALUES
+('Alice Johnson', 'RN', '1234567890', 60000, 1),
+('Bob Smith', 'RN', '9876543210', 45000, 2),
+('Clara Lee', 'RN', '5554443333', 50000, 3),
+('Emily Davis', 'RN', '2345678901', 62000, 1),
+('Michael Brown', 'RN', '3456789012', 59000, 1),
+('Jessica Wilson', 'RN', '4567890123', 61000, 1),
+('Robert Kowalski', 'RN', '5554443333', 50000, 3);
+
+INSERT INTO Care_centres (name, location, nurse_charge_id) VALUES
+('Sunshine Medical Center', 'New York, NY', 1),
+('Healing Touch Clinic', 'Los Angeles, CA', 2),
+('Wellness Haven', 'Chicago, IL', 3),
+('Saint Catherine Clinic', 'San Francisco, CA', 7);
+
+INSERT INTO Patients (name, address, telephone, care_centre_id) VALUES
+   ('John Doe', '123 Elm Street', '1234567890', 1),
+   ('Jane Smith', '456 Oak Avenue', '9876543210', 2),
+   ('Alice Johnson', '789 Pine Road', '5678901234', 3);
+
+INSERT INTO Physicians (pager_number, name, specialization, salary) VALUES
+(1001, 'Dr. Emily Carter', 'Cardiologist', 180000),
+(1002, 'Dr. Liam Nguyen', 'Pediatrician', 160000),
+(1003, 'Dr. Sophia Martinez', 'Neurologist', 200000);
+
+INSERT INTO Treatments (treatment_name, date_aplied, patient_id, physician_id) VALUES
+('Physical Therapy', '2025-03-15', 1, 1),
+('Chemotherapy', '2025-03-20', 2, 2),
+('Heart Surgery', '2025-03-25', 3, 3),
+('Physical Therapy', '2025-04-25', 3, 3);
+
+/*----------------------------------------------*/
+
+CREATE VIEW NURSE_SUMMARY (D, C, TOTAL_S, AVERAGE_S) AS
+SELECT cid, COUNT(*), SUM(salary), AVG(salary)
+FROM Care_centres
+INNER JOIN Nurses ON Nurses.care_centre_id = Care_centres.cid
+WHERE certificate_type LIKE 'RN%'
+GROUP BY cid;
+
+/*----------------------------------------------*/
+CREATE VIEW PATIENT_SUMMARY (Pid, Pn, CCN, NiC, Tid, Tn, PhyId, Date) AS
+SELECT pid, patients.name, care_centres.name, Nurses.name, tid, treatment_name, physician_id, date_aplied 
+FROM patients
+INNER JOIN Treatments ON Treatments.patient_id = patients.pid
+INNER JOIN Care_centres ON Care_centres.cid = patients.care_centre_id
+INNER JOIN Nurses ON Nurses.nid = Care_centres.nurse_charge_id
+ORDER BY pid, tid;
