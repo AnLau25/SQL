@@ -23,3 +23,27 @@ WHERE Project.proj_no IN (SELECT proj_no FROM Project_assignment
 
 
 
+SELECT COUNT(DISTINCT emp_no) FROM Project_assignment;
+
+SELECT AVG(salary) from Manager;
+
+SELECT manager_no, name, COUNT(Project.proj_no) name FROM Manager
+INNER JOIN Project ON Project.manager_no = Manager.manager_no
+GROUP BY manager_no, name;
+
+SELECT DISTINCT Manager.name, Manager.salary FROM Manager
+INNER JOIN Project ON Manager.manager_no = Project.manager_no
+INNER JOIN Project_assignment ON Project.proj_no = Project_assignment.proj_no
+INNER JOIN Employee ON Employee.emp_no = Project_assignment.emp_no
+WHERE Employee.rank = 'beginner'
+ORDER BY Manager.salary;
+
+SELECT Manager.name, SUM(Budget) FROM Project
+INNER JOIN Manager ON Manager.manager_no = Project.manager_no
+GROUP BY Manager.manager_no, Manager.name; 
+
+SELECT name, salary FROM Manager 
+INNER JOIN Project ON Project.manager_no = Manager.manager_no
+WHERE Project.proj_no IN (SELECT proj_no FROM Project_assignment
+                        HAVING COUNT(emp_no)>20
+                        GROUP BY proj_no);
